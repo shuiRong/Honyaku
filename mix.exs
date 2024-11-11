@@ -58,7 +58,10 @@ defmodule Honyaku.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:fast_rss, "~> 0.5.0"},
+      {:tesla, "~> 1.11"},
+      {:mint, "~> 1.0"}
     ]
   end
 
