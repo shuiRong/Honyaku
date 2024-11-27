@@ -60,8 +60,9 @@ defmodule Honyaku.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:fast_rss, "~> 0.5.0"},
-      {:tesla, "~> 1.11"},
-      {:mint, "~> 1.0"}
+      {:req, "~> 0.5.0"},
+      {:atomex, "~> 0.5.1"},
+      {:timex, "~> 3.7.11"}
     ]
   end
 
