@@ -27,18 +27,23 @@ defmodule HonyakuWeb.FeedController do
   end
 
   def build_feed(translated_feed, :rss) do
-    File.write!("/tmp/translated_feed_rss.json", Jason.encode!(translated_feed, pretty: true))
     link = translated_feed["link"]
 
-    Atomex.Feed.new(link, DateTime.utc_now(), translated_feed["title"])
-    |> Atomex.Feed.link(link, rel: "self")
+    last_build_date =
+      translated_feed["last_build_date"]
+      |> Timex.parse!("{RFC1123}")
+
+    Atomex.Feed.new(link, last_build_date, translated_feed["title"])
+    |> Atomex.Feed.add_field(:description, nil, translated_feed["description"])
+    |> Atomex.Feed.add_field(:language, nil, translated_feed["language"])
+    |> Atomex.Feed.add_field(:copyright, nil, translated_feed["copyright"])
+    |> Atomex.Feed.link(link)
     |> Atomex.Feed.entries(Enum.map(translated_feed["items"], &get_entry(&1, :rss)))
     |> Atomex.Feed.build()
     |> Atomex.generate_document()
   end
 
   def build_feed(translated_feed, :atom) do
-    File.write!("/tmp/translated_feed_atom.json", Jason.encode!(translated_feed, pretty: true))
     title = translated_feed["title"]["value"]
     id = translated_feed["id"]
 
@@ -69,7 +74,7 @@ defmodule HonyakuWeb.FeedController do
 
   defp get_entry(
          %{
-           "guid" => %{"value" => guid_value},
+           "link" => link,
            "pub_date" => pub_date,
            "title" => title,
            "description" => description
@@ -82,10 +87,11 @@ defmodule HonyakuWeb.FeedController do
       |> Timex.parse!("{RFC1123}")
 
     Atomex.Entry.new(
-      guid_value,
+      link,
       datetime,
       title
     )
+    |> Atomex.Entry.link(link)
     |> Atomex.Entry.summary(description, "html")
     |> Atomex.Entry.build()
   end
