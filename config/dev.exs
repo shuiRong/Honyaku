@@ -65,6 +65,9 @@ config :honyaku, HonyakuWeb.Endpoint,
 # Enable dev routes for dashboard and mailbox
 config :honyaku, dev_routes: true
 
+# Gemini API key 开发环境
+config :honyaku, gemini_api_key: System.get_env("GEMINI_API_KEY_DEV")
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

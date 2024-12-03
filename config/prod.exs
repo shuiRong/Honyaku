@@ -7,6 +7,9 @@ import Config
 # before starting your production server.
 config :honyaku, HonyakuWeb.Endpoint, cache_static_manifest: "priv/static/cache_manifest.json"
 
+# Gemini API key 生产环境
+config :honyaku, gemini_api_key: System.get_env("GEMINI_API_KEY")
+
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: Honyaku.Finch
 
