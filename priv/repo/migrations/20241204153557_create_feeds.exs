@@ -4,8 +4,8 @@ defmodule Honyaku.Repo.Migrations.CreateFeeds do
   def change do
     create table(:feeds) do
       add :url, :string
-      add :source_lang, :string
-      add :target_lang, :string
+      add :title, :string
+      add :subtitle, :string
 
       timestamps(type: :utc_datetime)
     end

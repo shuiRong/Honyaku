@@ -4,7 +4,8 @@ defmodule Honyaku.Feeds.RSSTranslator do
   """
   require Logger
 
-  alias Honyaku.External.Gemini
+  # alias Honyaku.External.Gemini
+  alias Honyaku.External.DeepL
 
   def load_translated_feed(url, source_lang, target_lang) do
     with {:ok, parsed_feed} <- load_feed(url),
@@ -156,10 +157,10 @@ defmodule Honyaku.Feeds.RSSTranslator do
     # 并行翻译标题和副标题
     feed_tasks = [
       Task.async(fn ->
-        Gemini.translate(feed["title"]["value"], source_lang, target_lang, feed["title"]["value"])
+        translate(feed["title"]["value"], source_lang, target_lang)
       end),
       Task.async(fn ->
-        Gemini.translate(feed["subtitle"], source_lang, target_lang, feed["subtitle"])
+        translate(feed["subtitle"], source_lang, target_lang)
       end)
     ]
 
@@ -169,19 +170,17 @@ defmodule Honyaku.Feeds.RSSTranslator do
       |> Enum.map(fn entry ->
         Task.async(fn ->
           title =
-            Gemini.translate(
+            translate(
               entry["title"]["value"],
               source_lang,
-              target_lang,
-              entry["title"]["value"]
+              target_lang
             )
 
           content =
-            Gemini.translate(
+            translate(
               entry["content"]["value"],
               source_lang,
-              target_lang,
-              entry["content"]["value"]
+              target_lang
             )
 
           %{
@@ -206,5 +205,9 @@ defmodule Honyaku.Feeds.RSSTranslator do
          "subtitle" => subtitle,
          "entries" => entries
      }}
+  end
+
+  defp translate(text, source_lang, target_lang) do
+    DeepL.translate(text, source_lang, target_lang)
   end
 end

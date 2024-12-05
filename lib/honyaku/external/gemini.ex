@@ -7,7 +7,7 @@ defmodule Honyaku.External.Gemini do
 
   @base_url "https://generativelanguage.googleapis.com/v1beta"
 
-  def translate(text, source_lang, target_lang) do
+  def translate(text, target_lang, source_lang) do
     Logger.info("开始翻译: #{text}")
 
     case Req.post(
@@ -53,10 +53,10 @@ defmodule Honyaku.External.Gemini do
   @doc """
   翻译文本的安全接口。如果翻译过程中出现错误,会返回传入的默认值而不是抛出异常。
   """
-  def translate(text, source_lang, target_lang, default_text) do
-    case translate(text, source_lang, target_lang) do
+  def translate(text, target_lang, source_lang) do
+    case translate(text, target_lang, source_lang) do
       {:ok, result} -> result
-      {:error, _} -> default_text
+      {:error, _} -> text
     end
   end
 end
