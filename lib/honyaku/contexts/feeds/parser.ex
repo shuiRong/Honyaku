@@ -39,12 +39,15 @@ defmodule Honyaku.Feeds.ParseFeed do
 
   def parse_feed(:rss, raw_content) do
     with {:ok, rss_feed} <- FastRSS.parse_rss(raw_content) do
+      # File.write("tmp/rss_feed.json", Jason.encode!(rss_feed))
       {:ok, rss_to_atom(rss_feed)}
     end
   end
 
   def parse_feed(:atom, raw_content) do
-    FastRSS.parse_atom(raw_content)
+    {:ok, feed} = FastRSS.parse_atom(raw_content)
+    # File.write("tmp/atom_feed.json", Jason.encode!(feed))
+    {:ok, feed}
   end
 
   defp rss_to_atom(rss_feed) do
@@ -71,7 +74,12 @@ defmodule Honyaku.Feeds.ParseFeed do
       "logo" => nil,
       "namespaces" => %{},
       "rights" => rss_feed["copyright"],
-      "subtitle" => rss_feed["description"],
+      "subtitle" => %{
+        "base" => nil,
+        "lang" => nil,
+        "type" => "Text",
+        "value" => rss_feed["description"]
+      },
       "title" => %{
         "base" => nil,
         "lang" => nil,
@@ -95,7 +103,7 @@ defmodule Honyaku.Feeds.ParseFeed do
               "content_type" => "html",
               "lang" => nil,
               "src" => nil,
-              "value" => item["description"]
+              "value" => item["content"]
             },
             "contributors" => [],
             "extensions" => %{},
@@ -113,7 +121,12 @@ defmodule Honyaku.Feeds.ParseFeed do
             "published" => item["pub_date"],
             "rights" => nil,
             "source" => nil,
-            "summary" => nil,
+            "summary" => %{
+              "base" => nil,
+              "lang" => nil,
+              "type" => "Text",
+              "value" => item["description"]
+            },
             "title" => %{
               "base" => nil,
               "lang" => nil,
@@ -164,8 +177,6 @@ defmodule Honyaku.Feeds.ParseFeed do
           with {:ok, translated_title} <- Task.await(article_title_task, 1_000 * 60),
                {:ok, translated_content} <- Task.await(article_content_task, 1_000 * 60),
                {:ok, translated_summary} <- Task.await(article_summary_task, 1_000 * 60) do
-            Logger.info("article.content: #{inspect(article.content)}")
-
             {:ok,
              %{
                article
@@ -334,7 +345,11 @@ defmodule Honyaku.Feeds.ParseFeed do
         {:error, reason} -> Logger.error("解析文章失败: #{inspect(reason)}")
       end)
 
-    query_articles = from a in Article, where: a.id in ^article_ids, preload: [:translations]
+    query_articles =
+      from a in Article,
+        where: a.id in ^article_ids,
+        preload: [:translations],
+        order_by: [desc: a.original_updated_at]
 
     saved_feed
     |> Repo.preload([

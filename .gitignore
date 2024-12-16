@@ -35,3 +35,4 @@ honyaku-*.tar
 npm-debug.log
 /assets/node_modules/
 
+tmp/

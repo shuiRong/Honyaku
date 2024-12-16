@@ -43,7 +43,7 @@ defmodule Honyaku.Feeds do
           |> Feed.changeset(%{
             url: url,
             title: parsed_feed["title"]["value"],
-            subtitle: parsed_feed["subtitle"],
+            subtitle: parsed_feed["subtitle"]["value"],
             original_updated_at: datetime
           })
           |> Repo.insert()
@@ -53,7 +53,7 @@ defmodule Honyaku.Feeds do
           existing_feed
           |> Feed.changeset(%{
             title: parsed_feed["title"]["value"],
-            subtitle: parsed_feed["subtitle"],
+            subtitle: parsed_feed["subtitle"]["value"],
             original_updated_at: datetime
           })
           |> Repo.update()
