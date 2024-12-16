@@ -7,11 +7,12 @@ defmodule Honyaku.External.DeepL do
 
   @base_url "https://api-free.deepl.com/v2"
 
-  def translate(text, target_lang, _source_lang) do
-    Logger.info("开始翻译: #{text}")
-
+  @doc """
+  翻译文本的安全接口。如果翻译过程中出现错误,会返回传入的默认值而不是抛出异常。
+  """
+  def translate(text, target_lang, source_lang) do
     case Req.post(
-           "#{@base_url}/v2/translate",
+           "#{@base_url}/translate",
            headers: [
              {"Authorization",
               "DeepL-Auth-Key #{Application.fetch_env!(:honyaku, :deepl_api_key)}"}
@@ -20,7 +21,8 @@ defmodule Honyaku.External.DeepL do
              "text" => [
                text
              ],
-             "target_lang" => target_lang
+             "target_lang" => target_lang,
+             "source_lang" => source_lang
            }
          ) do
       {:ok,
@@ -42,16 +44,6 @@ defmodule Honyaku.External.DeepL do
       {:error, reason} ->
         Logger.error("DeepL API调用失败：#{inspect(reason)}")
         {:error, reason}
-    end
-  end
-
-  @doc """
-  翻译文本的安全接口。如果翻译过程中出现错误,会返回传入的默认值而不是抛出异常。
-  """
-  def translate(text, target_lang, source_lang) do
-    case translate(text, target_lang, source_lang) do
-      {:ok, result} -> result
-      {:error, _} -> text
     end
   end
 end

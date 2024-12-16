@@ -71,6 +71,9 @@ config :honyaku, gemini_api_key: System.get_env("GEMINI_API_KEY_DEV")
 # DeepL API key 开发环境
 config :honyaku, deepl_api_key: System.get_env("DEEPL_API_KEY_DEV")
 
+# Rapid API key 开发环境
+config :honyaku, rapid_api_key: System.get_env("RAPID_API_KEY_DEV")
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

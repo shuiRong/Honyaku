@@ -12,6 +12,9 @@ config :honyaku, gemini_api_key: System.get_env("GEMINI_API_KEY")
 # DeepL API key 生产环境
 config :honyaku, deepl_api_key: System.get_env("DEEPL_API_KEY")
 
+# Rapid API key 生产环境
+config :honyaku, rapid_api_key: System.get_env("RAPID_API_KEY")
+
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: Honyaku.Finch
 
