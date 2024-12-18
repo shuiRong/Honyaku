@@ -19,7 +19,7 @@ config :honyaku, Honyaku.Repo,
 config :honyaku, HonyakuWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  http: [ip: {127, 0, 0, 1}, port: 8080],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
@@ -64,15 +64,6 @@ config :honyaku, HonyakuWeb.Endpoint,
 
 # Enable dev routes for dashboard and mailbox
 config :honyaku, dev_routes: true
-
-# Gemini API key 开发环境
-config :honyaku, gemini_api_key: System.get_env("GEMINI_API_KEY_DEV")
-
-# DeepL API key 开发环境
-config :honyaku, deepl_api_key: System.get_env("DEEPL_API_KEY_DEV")
-
-# Rapid API key 开发环境
-config :honyaku, rapid_api_key: System.get_env("RAPID_API_KEY_DEV")
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

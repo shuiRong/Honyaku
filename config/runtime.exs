@@ -49,7 +49,7 @@ if config_env() == :prod do
       """
 
   host = System.get_env("PHX_HOST") || "example.com"
-  port = String.to_integer(System.get_env("PORT") || "4000")
+  port = String.to_integer(System.get_env("PORT") || "8080")
 
   config :honyaku, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
@@ -115,3 +115,10 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end
+
+# Gemini API key 生产环境
+config :honyaku, gemini_api_key: System.get_env("GEMINI_API_KEY")
+# DeepL API key 生产环境
+config :honyaku, deepl_api_key: System.get_env("DEEPL_API_KEY")
+# Rapid API key 生产环境
+config :honyaku, rapid_api_key: System.get_env("RAPID_API_KEY")

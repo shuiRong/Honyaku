@@ -6,14 +6,14 @@ defmodule Honyaku.External.TranslationBalancer do
   require Logger
 
   alias Honyaku.External.{
-    DeepL,
     Gemini.Flash1_5,
     Gemini.Flash2,
     Rapid.FreeGoogleTranslator,
-    Rapid.AiBitTranslator
+    Rapid.AiBitTranslator,
+    Rapid.DeepLTranslator
   }
 
-  @apis [DeepL, Flash1_5, Flash2, FreeGoogleTranslator, AiBitTranslator]
+  @apis [Flash1_5, Flash2, FreeGoogleTranslator, AiBitTranslator, DeepLTranslator]
 
   @doc """
   翻译文本，使用指定的负载均衡算法。
