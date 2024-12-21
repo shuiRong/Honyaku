@@ -118,6 +118,8 @@ end
 
 # Gemini API key 生产环境
 config :honyaku, gemini_api_key: System.get_env("GEMINI_API_KEY")
+# Groq API key 生产环境
+config :honyaku, groq_api_key: System.get_env("GROQ_API_KEY")
 # DeepL API key 生产环境
 config :honyaku, deepl_api_key: System.get_env("DEEPL_API_KEY")
 # Rapid API key 生产环境

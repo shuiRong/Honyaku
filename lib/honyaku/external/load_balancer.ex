@@ -10,10 +10,11 @@ defmodule Honyaku.External.TranslationBalancer do
     Gemini.Flash2,
     Rapid.FreeGoogleTranslator,
     Rapid.AiBitTranslator,
-    Rapid.DeepLTranslator
+    Rapid.DeepLTranslator,
+    Groq.Gemma2_2b
   }
 
-  @apis [Flash1_5, Flash2, FreeGoogleTranslator, AiBitTranslator, DeepLTranslator]
+  @apis [Flash1_5, Flash2, FreeGoogleTranslator, AiBitTranslator, DeepLTranslator, Gemma2_2b]
 
   @doc """
   翻译文本，使用指定的负载均衡算法。

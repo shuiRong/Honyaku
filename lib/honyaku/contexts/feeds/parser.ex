@@ -39,14 +39,14 @@ defmodule Honyaku.Feeds.ParseFeed do
 
   def parse_feed(:rss, raw_content) do
     with {:ok, rss_feed} <- FastRSS.parse_rss(raw_content) do
-      # File.write("tmp/rss_feed.json", Jason.encode!(rss_feed))
+      File.write("tmp/rss_feed.json", Jason.encode!(rss_feed))
       {:ok, rss_to_atom(rss_feed)}
     end
   end
 
   def parse_feed(:atom, raw_content) do
     {:ok, feed} = FastRSS.parse_atom(raw_content)
-    # File.write("tmp/atom_feed.json", Jason.encode!(feed))
+    File.write("tmp/atom_feed.json", Jason.encode!(feed))
     {:ok, feed}
   end
 
@@ -341,9 +341,14 @@ defmodule Honyaku.Feeds.ParseFeed do
     article_ids =
       saved_articles_tuple_list
       |> Enum.map(fn
-        {:ok, article} -> article.id
-        {:error, reason} -> Logger.error("解析文章失败: #{inspect(reason)}")
+        {:ok, article} ->
+          article.id
+
+        {:error, reason} ->
+          Logger.error("解析文章失败: #{inspect(reason)}")
+          nil
       end)
+      |> Enum.reject(&is_nil/1)
 
     query_articles =
       from a in Article,

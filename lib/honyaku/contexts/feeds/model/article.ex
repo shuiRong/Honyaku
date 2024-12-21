@@ -62,10 +62,10 @@ defmodule Honyaku.Feeds.Article do
     |> assoc_constraint(:feed)
   end
 
+  # content 和 summary 都是可选
   defp content_changeset(content, attrs) do
     content
     |> cast(attrs, [:type, :value])
-    |> validate_required([:type, :value])
   end
 
   defp summary_changeset(summary, attrs) do

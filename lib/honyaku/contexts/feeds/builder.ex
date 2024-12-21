@@ -49,11 +49,20 @@ defmodule Honyaku.Feeds.BuildFeed do
       original_updated_at,
       title
     )
-    |> Atomex.Entry.content(content.value, type: content.type)
+    |> build_content(content.value, content.type)
     |> build_summary(summary.value, summary.type)
     |> Atomex.Entry.published(original_published_at)
     |> Atomex.Entry.link(link)
     |> Atomex.Entry.build()
+  end
+
+  defp build_content(entry, nil, _type) do
+    entry
+  end
+
+  defp build_content(entry, value, type) do
+    entry
+    |> Atomex.Entry.content(value, type: type)
   end
 
   defp build_summary(entry, nil, _type) do

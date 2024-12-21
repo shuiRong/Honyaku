@@ -94,10 +94,10 @@ defmodule Honyaku.Feeds do
         |> Article.changeset(article)
         |> Repo.insert()
 
+      # 先不考虑文章内容有变更，需要更新的情况。
+      # 因为涉及到对应的translation也要更新，比较复杂。
       existing_article ->
-        existing_article
-        |> Article.changeset(article)
-        |> Repo.update()
+        {:ok, existing_article}
     end
   end
 
