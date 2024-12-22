@@ -124,3 +124,5 @@ config :honyaku, groq_api_key: System.get_env("GROQ_API_KEY")
 config :honyaku, deepl_api_key: System.get_env("DEEPL_API_KEY")
 # Rapid API key 生产环境
 config :honyaku, rapid_api_key: System.get_env("RAPID_API_KEY")
+# Open Router API key 生产环境
+config :honyaku, open_router_api_key: System.get_env("OPEN_ROUTER_API_KEY")

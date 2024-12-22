@@ -118,7 +118,6 @@ defmodule Honyaku.Feeds.ParseFeed do
                 "title" => nil
               }
             ],
-            "published" => item["pub_date"],
             "rights" => nil,
             "source" => nil,
             "summary" => %{
@@ -133,6 +132,7 @@ defmodule Honyaku.Feeds.ParseFeed do
               "type" => "Text",
               "value" => item["title"]
             },
+            "published" => item["pub_date"],
             "updated" => item["pub_date"]
           }
         end)
@@ -244,12 +244,10 @@ defmodule Honyaku.Feeds.ParseFeed do
      }}
   end
 
-  @doc """
-  获取 Feed 字段的翻译结果
-  1. 如果数据库中已存在翻译结果，则直接返回
-  2. 如果数据库中不存在翻译结果，则创建翻译任务
-  2.1 如果翻译任务成功，则将翻译结果保存到数据库中
-  """
+  # 获取 Feed 字段的翻译结果
+  # 1. 如果数据库中已存在翻译结果，则直接返回
+  # 2. 如果数据库中不存在翻译结果，则创建翻译任务
+  # 2.1 如果翻译任务成功，则将翻译结果保存到数据库中
   defp get_feed_field_translation(feed_with_preload, saved_feed, field, target_lang, source_lang) do
     Task.async(fn ->
       case Enum.find(feed_with_preload.translations, fn t ->

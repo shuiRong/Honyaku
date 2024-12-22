@@ -69,8 +69,10 @@ defmodule Honyaku.Feeds do
   def save_articles(feed, entries) do
     entries
     |> Enum.map(fn entry ->
-      with {:ok, original_published_at} <- DateTimeUtils.parse_datetime(entry["published"]),
-           {:ok, original_updated_at} <- DateTimeUtils.parse_datetime(entry["updated"]) do
+      with {:ok, original_published_at} <-
+             DateTimeUtils.parse_datetime(entry["published"] || entry["updated"]),
+           {:ok, original_updated_at} <-
+             DateTimeUtils.parse_datetime(entry["updated"] || entry["published"]) do
         article = %{
           feed_id: feed.id,
           link: entry["links"] |> List.first() |> Map.get("href"),
