@@ -23,6 +23,9 @@ config :honyaku, HonyakuWeb.Endpoint,
 # In test we don't send emails
 config :honyaku, Honyaku.Mailer, adapter: Swoosh.Adapters.Test
 
+# 为了防止 Oban 在测试运行期间运行作业和插件
+config :honyaku, Oban, testing: :inline
+
 # Disable swoosh api client as it is only required for production adapters
 config :swoosh, :api_client, false
 

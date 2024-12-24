@@ -17,7 +17,8 @@ defmodule Honyaku.Application do
       # Start a worker by calling: Honyaku.Worker.start_link(arg)
       # {Honyaku.Worker, arg},
       # Start to serve requests, typically the last entry
-      HonyakuWeb.Endpoint
+      HonyakuWeb.Endpoint,
+      {Oban, Application.fetch_env!(:honyaku, Oban)}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

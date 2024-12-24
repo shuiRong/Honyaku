@@ -11,7 +11,7 @@ defmodule Honyaku.External.DeeplTranslator.MyMemory do
     }
 
     case Req.post(
-           "#{@base_url}/mymemory",
+           "#{@base_url}/mymemory/",
            json: body
          ) do
       {:ok,

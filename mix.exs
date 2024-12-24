@@ -62,7 +62,8 @@ defmodule Honyaku.MixProject do
       {:fast_rss, "~> 0.5.0"},
       {:req, "~> 0.5.0"},
       {:atomex, "~> 0.5.1"},
-      {:timex, "~> 3.7.11"}
+      {:timex, "~> 3.7.11"},
+      {:oban, "~> 2.17"}
     ]
   end
 

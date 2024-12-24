@@ -7,22 +7,22 @@ defmodule Honyaku.Feeds do
   alias Honyaku.Repo
   alias Honyaku.Feeds.Feed
   alias Honyaku.Feeds.Article
-  alias Honyaku.Feeds.ParseFeed
+  alias Honyaku.Feeds.Parser
   alias Honyaku.Utils.DateTimeUtils
 
   def load_translated_feed(url, target_lang, source_lang) do
     with {:ok, parsed_feed} <- load_feed(url),
          {:ok, feed, save_feed_and_articles} <- save_feed_and_articles(url, parsed_feed),
          {:ok, translated_feed} <-
-           ParseFeed.translate_feed(feed, save_feed_and_articles, target_lang, source_lang) do
+           Parser.translate_feed(feed, save_feed_and_articles, target_lang, source_lang) do
       {:ok, translated_feed}
     end
   end
 
   def load_feed(url) do
     with {:ok, raw_content} <- fetch_feed_content(url),
-         {:ok, feed_type} <- ParseFeed.detect_feed_type(raw_content),
-         {:ok, parsed_feed} <- ParseFeed.parse_feed(feed_type, raw_content) do
+         {:ok, feed_type} <- Parser.detect_feed_type(raw_content),
+         {:ok, parsed_feed} <- Parser.parse_feed(feed_type, raw_content) do
       {:ok, parsed_feed}
     end
   end

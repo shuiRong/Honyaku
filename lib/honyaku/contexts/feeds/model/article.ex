@@ -1,5 +1,6 @@
 defmodule Honyaku.Feeds.Article.Content do
   use Ecto.Schema
+  @derive {Jason.Encoder, only: [:id, :type, :value]}
 
   embedded_schema do
     field :type, :string
@@ -9,6 +10,7 @@ end
 
 defmodule Honyaku.Feeds.Article.Summary do
   use Ecto.Schema
+  @derive {Jason.Encoder, only: [:id, :type, :value]}
 
   embedded_schema do
     field :type, :string

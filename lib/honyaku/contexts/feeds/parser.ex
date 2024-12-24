@@ -1,4 +1,4 @@
-defmodule Honyaku.Feeds.ParseFeed do
+defmodule Honyaku.Feeds.Parser do
   @moduledoc """
   解析、转换、翻译 RSS 订阅源
   """
@@ -173,28 +173,109 @@ defmodule Honyaku.Feeds.ParseFeed do
           article_summary_task =
             get_feed_article_field_translation(article, "summary", target_lang, source_lang)
 
-          # 同时等待所有字段的翻译任务完成
-          with {:ok, translated_title} <- Task.await(article_title_task, 1_000 * 60),
-               {:ok, translated_content} <- Task.await(article_content_task, 1_000 * 60),
-               {:ok, translated_summary} <- Task.await(article_summary_task, 1_000 * 60) do
-            {:ok,
-             %{
-               article
-               | title: translated_title,
-                 content: %{
-                   value: translated_content,
-                   type: article.content.type
-                 },
-                 summary: %{
-                   value: translated_summary,
-                   type: article.summary.type
-                 }
-             }}
-          else
-            {:error, reason} ->
-              Logger.error("条目翻译失败 #{inspect(reason)}")
-              {:ok, article}
-          end
+          tasks_with_results =
+            Task.yield_many(
+              [article_title_task, article_content_task, article_summary_task],
+              timeout: 1_000 * 60,
+              on_timeout: :kill_task
+            )
+
+          [title_result, content_result, summary_result] =
+            Enum.map(tasks_with_results, fn
+              {_task, {:ok, {:ok, translated_text}}} -> {:ok, translated_text}
+              {_task, {:ok, {:error, reason}}} -> {:error, reason}
+              {_task, {:exit, reason}} -> {:error, reason}
+              {_task, nil} -> {:error, :timeout}
+            end)
+
+          # 处理标题翻译
+          translated_title =
+            case title_result do
+              {:ok, text} ->
+                text
+
+              {:error, _reason} ->
+                # 创建标题翻译任务
+                %{
+                  saved_article: %{
+                    id: article.id,
+                    title: article.title,
+                    content: article.content,
+                    summary: article.summary
+                  },
+                  field: "title",
+                  target_lang: target_lang,
+                  source_lang: source_lang
+                }
+                |> Honyaku.TranslateJob.new()
+                |> Oban.insert()
+
+                article.title
+            end
+
+          # 处理内容翻译
+          translated_content =
+            case content_result do
+              {:ok, text} ->
+                text
+
+              {:error, _reason} ->
+                # 创建内容翻译任务
+                %{
+                  saved_article: %{
+                    id: article.id,
+                    title: article.title,
+                    content: article.content,
+                    summary: article.summary
+                  },
+                  field: "content",
+                  target_lang: target_lang,
+                  source_lang: source_lang
+                }
+                |> Honyaku.TranslateJob.new()
+                |> Oban.insert()
+
+                article.content.value
+            end
+
+          # 处理摘要翻译
+          translated_summary =
+            case summary_result do
+              {:ok, text} ->
+                text
+
+              {:error, _reason} ->
+                # 创建摘要翻译任务
+                %{
+                  saved_article: %{
+                    id: article.id,
+                    title: article.title,
+                    content: article.content,
+                    summary: article.summary
+                  },
+                  field: "summary",
+                  target_lang: target_lang,
+                  source_lang: source_lang
+                }
+                |> Honyaku.TranslateJob.new()
+                |> Oban.insert()
+
+                article.summary.value
+            end
+
+          {:ok,
+           %{
+             article
+             | title: translated_title,
+               content: %{
+                 value: translated_content,
+                 type: article.content.type
+               },
+               summary: %{
+                 value: translated_summary,
+                 type: article.summary.type
+               }
+           }}
         end)
       end)
 
@@ -206,6 +287,21 @@ defmodule Honyaku.Feeds.ParseFeed do
 
         {:error, reason} ->
           Logger.debug("标题翻译失败：#{inspect(reason)}")
+
+          # 创建翻译任务
+          %{
+            saved_feed: %{
+              id: saved_feed.id,
+              title: saved_feed.title,
+              subtitle: saved_feed.subtitle
+            },
+            field: "title",
+            target_lang: target_lang,
+            source_lang: source_lang
+          }
+          |> Honyaku.TranslateJob.new()
+          |> Oban.insert()
+
           # 使用原始标题作为回退
           saved_feed.title
       end
@@ -217,6 +313,21 @@ defmodule Honyaku.Feeds.ParseFeed do
 
         {:error, reason} ->
           Logger.error("副标题翻译失败：#{inspect(reason)}")
+
+          # 创建翻译任务
+          %{
+            saved_feed: %{
+              id: saved_feed.id,
+              title: saved_feed.title,
+              subtitle: saved_feed.subtitle
+            },
+            field: "subtitle",
+            target_lang: target_lang,
+            source_lang: source_lang
+          }
+          |> Honyaku.TranslateJob.new()
+          |> Oban.insert()
+
           # 使用原始副标题作为兜底
           saved_feed.subtitle
       end
@@ -225,14 +336,8 @@ defmodule Honyaku.Feeds.ParseFeed do
     translated_articles =
       article_articles
       |> Enum.map(fn task ->
-        case Task.await(task, 1_000 * 60) do
-          {:ok, article} ->
-            article
-
-          {:error, reason} ->
-            Logger.error("条目翻译失败：#{inspect(reason)}")
-            {:error, reason}
-        end
+        {:ok, article} = Task.await(task, 1_000 * 60)
+        article
       end)
 
     {:ok,
@@ -320,10 +425,6 @@ defmodule Honyaku.Feeds.ParseFeed do
              article_id: saved_article.id
            }) do
       {:ok, translated_text}
-    else
-      {:error, reason} ->
-        Logger.debug("条目 #{field} 翻译失败 #{inspect(reason)}, 使用原始文本兜底")
-        {:ok, text}
     end
   end
 

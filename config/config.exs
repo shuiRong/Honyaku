@@ -31,6 +31,11 @@ config :honyaku, HonyakuWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :honyaku, Honyaku.Mailer, adapter: Swoosh.Adapters.Local
 
+config :honyaku, Oban,
+  engine: Oban.Engines.Basic,
+  queues: [default: 10, translate: 10],
+  repo: Honyaku.Repo
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
