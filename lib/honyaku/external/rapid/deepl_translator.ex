@@ -31,11 +31,11 @@ defmodule Honyaku.External.Rapid.DeepLTranslator do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("翻译失败：#{inspect(reason)}")
+        Logger.error("DeepL Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("API调用失败：#{inspect(reason)}")
+        Logger.error("DeepL Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

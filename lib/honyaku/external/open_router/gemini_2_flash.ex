@@ -38,15 +38,22 @@ defmodule Honyaku.External.OpenRouter.Gemini2_Flash do
        }} ->
         {:ok, content}
 
+      {:ok,
+       %Req.Response{
+         status: 200,
+         body: %{"error" => %{"code" => 429}}
+       }} ->
+        {:error, :quota_exhausted}
+
       {:ok, %Req.Response{status: 429}} ->
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("翻译失败，未知错误：#{inspect(reason)}")
+        Logger.error("Gemini 2 Flash Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("Gemini API调用失败：#{inspect(reason)}")
+        Logger.error("Gemini 2 Flash Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

@@ -41,11 +41,11 @@ defmodule Honyaku.External.Gemini.Flash1_5 do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("翻译失败，未知错误：#{inspect(reason)}")
+        Logger.error("Gemini Flash 1.5 Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("Gemini API调用失败：#{inspect(reason)}")
+        Logger.error("Gemini Flash 1.5 Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

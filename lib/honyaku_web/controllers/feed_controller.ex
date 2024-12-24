@@ -7,8 +7,6 @@ defmodule HonyakuWeb.FeedController do
   action_fallback HonyakuWeb.FallbackController
 
   def index(conn, %{"url" => url, "target_lang" => target_lang, "source_lang" => source_lang}) do
-    Logger.info("解析 RSS 订阅源: #{url}")
-
     case FeedContext.load_translated_feed(url, target_lang, source_lang) do
       {:ok, translated_feed} ->
         xml_content = translated_feed |> BuildFeed.build_feed()

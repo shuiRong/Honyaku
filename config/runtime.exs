@@ -126,3 +126,7 @@ config :honyaku, deepl_api_key: System.get_env("DEEPL_API_KEY")
 config :honyaku, rapid_api_key: System.get_env("RAPID_API_KEY")
 # Open Router API key 生产环境
 config :honyaku, open_router_api_key: System.get_env("OPEN_ROUTER_API_KEY")
+# Oh My GPT API key 生产环境
+config :honyaku, oh_my_gpt_api_key: System.get_env("OH_MY_GPT_API_KEY")
+# Tencent API key 生产环境
+config :honyaku, tencent_api_key: System.get_env("TENCENT_API_KEY")

@@ -24,14 +24,13 @@ defmodule Honyaku.External.Rapid.AiBitTranslator do
 
     case Req.post("#{@base_url}/translator/html", headers: headers, json: body) do
       {:ok, %Req.Response{status: 200, body: %{"trans" => translated_html}}} ->
-        Logger.info("翻译成功：#{translated_html}")
         {:ok, translated_html}
 
       {:ok, %Req.Response{status: 429}} ->
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("翻译失败，未知错误：#{inspect(reason)}")
+        Logger.error("AiBit Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->

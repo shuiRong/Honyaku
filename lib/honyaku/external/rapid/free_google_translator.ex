@@ -25,7 +25,6 @@ defmodule Honyaku.External.Rapid.FreeGoogleTranslator do
 
     case Req.post("#{@base_url}/free-google-translator", headers: headers, json: body) do
       {:ok, %Req.Response{status: 200, body: %{"translation" => translated_text}}} ->
-        Logger.info("翻译成功：#{translated_text}")
         {:ok, translated_text}
 
       {:ok, %Req.Response{status: 200, body: %{"message" => reason}}} ->
@@ -36,7 +35,7 @@ defmodule Honyaku.External.Rapid.FreeGoogleTranslator do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("翻译失败，未知错误：#{inspect(reason)}")
+        Logger.error("Free Google Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->

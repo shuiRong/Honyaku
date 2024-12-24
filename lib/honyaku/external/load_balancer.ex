@@ -11,8 +11,10 @@ defmodule Honyaku.External.TranslationBalancer do
     Rapid.FreeGoogleTranslator,
     Rapid.AiBitTranslator,
     Rapid.DeepLTranslator,
-    Groq.Gemma2_2b,
-    OpenRouter.Gemini2_Flash
+    OpenRouter.Gemini2_Flash,
+    OhMyGPT.GPT4o_Mini,
+    DeeplTranslator.Google,
+    DeeplTranslator.MyMemory
   }
 
   @apis [
@@ -21,8 +23,10 @@ defmodule Honyaku.External.TranslationBalancer do
     FreeGoogleTranslator,
     AiBitTranslator,
     DeepLTranslator,
-    Gemma2_2b,
-    Gemini2_Flash
+    Gemini2_Flash,
+    GPT4o_Mini,
+    Google,
+    MyMemory
   ]
 
   @doc """
