@@ -375,6 +375,8 @@ defmodule Honyaku.Feeds.Parser do
         _ -> ""
       end
 
+    Logger.info("translate_and_save_feed_field: #{field} #{target_lang} #{source_lang}")
+
     with {:ok, translated_text} <- translate(text, target_lang, source_lang),
          {:ok, _translation} <-
            Repo.insert(%Translation{
@@ -415,6 +417,8 @@ defmodule Honyaku.Feeds.Parser do
         "summary" -> saved_article.summary.value
         _ -> ""
       end
+
+    Logger.info("translate_and_save_article_field: #{field} #{target_lang} #{source_lang}")
 
     with {:ok, translated_text} <- translate(text, target_lang, source_lang),
          {:ok, _translation} <-
