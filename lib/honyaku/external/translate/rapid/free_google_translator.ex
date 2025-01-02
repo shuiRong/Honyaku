@@ -1,4 +1,4 @@
-defmodule Honyaku.External.Rapid.FreeGoogleTranslator do
+defmodule Honyaku.External.Translate.Rapid.FreeGoogleTranslator do
   @moduledoc """
   封装 Rapid 上的一些翻译 API 的调用
   """
@@ -35,11 +35,11 @@ defmodule Honyaku.External.Rapid.FreeGoogleTranslator do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("Free Google Translator API调用失败，未知错误：#{inspect(reason)}")
+        Logger.debug("Free Google Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("Free Google Translator API调用失败：#{inspect(reason)}")
+        Logger.debug("Free Google Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

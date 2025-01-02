@@ -1,26 +1,9 @@
-defmodule Honyaku.Feeds.Article.Content do
-  use Ecto.Schema
-  @derive {Jason.Encoder, only: [:id, :type, :value]}
-
-  embedded_schema do
-    field :type, :string
-    field :value, :string
-  end
-end
-
-defmodule Honyaku.Feeds.Article.Summary do
-  use Ecto.Schema
-  @derive {Jason.Encoder, only: [:id, :type, :value]}
-
-  embedded_schema do
-    field :type, :string
-    field :value, :string
-  end
-end
-
 defmodule Honyaku.Feeds.Article do
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias Honyaku.Feeds.{Feed, Translation}
+  alias Honyaku.Feeds.Article.{Content, Summary}
 
   schema "articles" do
     field :link, :string
@@ -34,14 +17,14 @@ defmodule Honyaku.Feeds.Article do
 
     # 文章内容
     # on_replace: :update 表示当文章内容被更新时，连带着直接更新 content schema 的内容
-    embeds_one :content, Honyaku.Feeds.Article.Content, on_replace: :update
+    embeds_one :content, Content, on_replace: :update
 
     # 文章摘要
     # on_replace: :update 表示当文章摘要被更新时，连带着直接更新 summary schema 的内容
-    embeds_one :summary, Honyaku.Feeds.Article.Summary, on_replace: :update
+    embeds_one :summary, Summary, on_replace: :update
 
-    belongs_to :feed, Honyaku.Feeds.Feed
-    has_many :translations, Honyaku.Feeds.Translation
+    belongs_to :feed, Feed
+    has_many :translations, Translation
 
     timestamps(type: :utc_datetime)
   end
@@ -73,5 +56,25 @@ defmodule Honyaku.Feeds.Article do
   defp summary_changeset(summary, attrs) do
     summary
     |> cast(attrs, [:type, :value])
+  end
+end
+
+defmodule Honyaku.Feeds.Article.Content do
+  use Ecto.Schema
+  @derive {Jason.Encoder, only: [:id, :type, :value]}
+
+  embedded_schema do
+    field :type, :string
+    field :value, :string
+  end
+end
+
+defmodule Honyaku.Feeds.Article.Summary do
+  use Ecto.Schema
+  @derive {Jason.Encoder, only: [:id, :type, :value]}
+
+  embedded_schema do
+    field :type, :string
+    field :value, :string
   end
 end

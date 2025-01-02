@@ -1,4 +1,4 @@
-defmodule Honyaku.External.Gemini.Flash2 do
+defmodule Honyaku.External.Translate.Gemini.Flash1_5 do
   @moduledoc """
   封装 Gemini API 的调用
   """
@@ -27,7 +27,7 @@ defmodule Honyaku.External.Gemini.Flash2 do
     }
 
     case Req.post(
-           "#{@base_url}/models/gemini-2.0-flash-exp:generateContent?key=#{key}",
+           "#{@base_url}/models/gemini-1.5-flash-latest:generateContent?key=#{key}",
            json: body
          ) do
       {:ok,
@@ -41,11 +41,11 @@ defmodule Honyaku.External.Gemini.Flash2 do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("Gemini Flash 2 Translator API调用失败，未知错误：#{inspect(reason)}")
+        Logger.debug("Gemini Flash 1.5 Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("Gemini Flash 2 Translator API调用失败：#{inspect(reason)}")
+        Logger.debug("Gemini Flash 1.5 Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

@@ -1,4 +1,4 @@
-defmodule Honyaku.External.OpenRouter.Gemini2_Flash do
+defmodule Honyaku.External.Translate.OpenRouter.Gemini2_Flash do
   require Logger
 
   @base_url "https://openrouter.ai/api/v1"
@@ -49,11 +49,11 @@ defmodule Honyaku.External.OpenRouter.Gemini2_Flash do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("Gemini 2 Flash Translator API调用失败，未知错误：#{inspect(reason)}")
+        Logger.debug("Gemini 2 Flash Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("Gemini 2 Flash Translator API调用失败：#{inspect(reason)}")
+        Logger.debug("Gemini 2 Flash Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

@@ -1,4 +1,4 @@
-defmodule Honyaku.External.Rapid.AiBitTranslator do
+defmodule Honyaku.External.Translate.Rapid.AiBitTranslator do
   @moduledoc """
   封装 AiBit Translator API 的调用
   """
@@ -30,11 +30,11 @@ defmodule Honyaku.External.Rapid.AiBitTranslator do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("AiBit Translator API调用失败，未知错误：#{inspect(reason)}")
+        Logger.debug("AiBit Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("AiBit Translator API调用失败：#{inspect(reason)}")
+        Logger.debug("AiBit Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

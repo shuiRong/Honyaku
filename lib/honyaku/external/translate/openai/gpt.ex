@@ -1,4 +1,4 @@
-defmodule Honyaku.External.OhMyGPT.GPT4o_Mini do
+defmodule Honyaku.External.Translate.OhMyGPT.GPT4o_Mini do
   require Logger
 
   @base_url "https://aigptx.top/v1"
@@ -49,11 +49,11 @@ defmodule Honyaku.External.OhMyGPT.GPT4o_Mini do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("Gemini 2 Flash Translator API调用失败，未知错误：#{inspect(reason)}")
+        Logger.debug("Gemini 2 Flash Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("Gemini 2 Flash Translator API调用失败：#{inspect(reason)}")
+        Logger.debug("Gemini 2 Flash Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

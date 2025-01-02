@@ -1,4 +1,4 @@
-defmodule Honyaku.External.Rapid.DeepLTranslator do
+defmodule Honyaku.External.Translate.Rapid.DeepLTranslator do
   require Logger
 
   @base_url "https://deepl-translator4.p.rapidapi.com/api/v1"
@@ -31,11 +31,11 @@ defmodule Honyaku.External.Rapid.DeepLTranslator do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("DeepL Translator API调用失败，未知错误：#{inspect(reason)}")
+        Logger.debug("DeepL Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("DeepL Translator API调用失败：#{inspect(reason)}")
+        Logger.debug("DeepL Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

@@ -2,6 +2,8 @@ defmodule Honyaku.Feeds.Translation do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Honyaku.Feeds.{Article, Feed}
+
   # 记录翻译结果
   schema "translations" do
     # 记录原文所在表的字段名称，比如：title、subtitle、content、summary
@@ -10,8 +12,8 @@ defmodule Honyaku.Feeds.Translation do
     field :target_field, :string
     field :target_language, :string
     field :translated_text, :string
-    belongs_to :article, Honyaku.Feeds.Article
-    belongs_to :feed, Honyaku.Feeds.Feed
+    belongs_to :article, Article
+    belongs_to :feed, Feed
 
     timestamps(type: :utc_datetime)
   end

@@ -25,7 +25,12 @@ defmodule HonyakuWeb.Router do
     pipe_through :api
 
     resources "/urls", UrlController, except: [:new, :edit]
-    resources "/feed/translate", FeedController, only: [:index]
+  end
+
+  scope "/translate", HonyakuWeb do
+    pipe_through :api
+
+    resources "/", FeedController, only: [:index]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

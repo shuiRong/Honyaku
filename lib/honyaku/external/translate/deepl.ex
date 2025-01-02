@@ -1,4 +1,4 @@
-defmodule Honyaku.External.DeepL do
+defmodule Honyaku.External.Translate.DeepL do
   @moduledoc """
   封装 DeepL API 的调用
   """
@@ -38,11 +38,11 @@ defmodule Honyaku.External.DeepL do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("DeepL Translator API调用失败，未知错误：#{inspect(reason)}")
+        Logger.debug("DeepL Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("DeepL Translator API调用失败：#{inspect(reason)}")
+        Logger.debug("DeepL Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

@@ -1,7 +1,7 @@
-defmodule Honyaku.External.DeeplTranslator.Google do
+defmodule Honyaku.External.Translate.DeeplTranslator.MyMemory do
   require Logger
 
-  @base_url "https://deep-translator-api.azurewebsites.net"
+  @base_url "https://deep-translator-api.azurewebsites.net/"
 
   def translate(text, target_lang, source_lang) do
     body = %{
@@ -11,7 +11,7 @@ defmodule Honyaku.External.DeeplTranslator.Google do
     }
 
     case Req.post(
-           "#{@base_url}/google",
+           "#{@base_url}/mymemory/",
            json: body
          ) do
       {:ok,
@@ -25,11 +25,11 @@ defmodule Honyaku.External.DeeplTranslator.Google do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("Google Translator API调用失败，未知错误：#{inspect(reason)}")
+        Logger.debug("MyMemory Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("Google Translator API调用失败：#{inspect(reason)}")
+        Logger.debug("MyMemory Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

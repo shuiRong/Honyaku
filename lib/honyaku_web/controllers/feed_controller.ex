@@ -2,25 +2,29 @@ defmodule HonyakuWeb.FeedController do
   use HonyakuWeb, :controller
   require Logger
 
-  alias Honyaku.Feeds, as: FeedContext
-  alias Honyaku.Feeds.BuildFeed
+  alias Honyaku.Feeds
   action_fallback HonyakuWeb.FallbackController
 
   def index(conn, %{"url" => url, "target_lang" => target_lang, "source_lang" => source_lang}) do
-    case FeedContext.load_translated_feed(url, target_lang, source_lang) do
-      {:ok, translated_feed} ->
-        xml_content = translated_feed |> BuildFeed.build_feed()
+    with {:ok, raw_content} <- fetch_feed_content(url),
+         {:ok, translated_feed} <-
+           Feeds.load_translated_feed(url, raw_content, target_lang, source_lang) do
+      xml_content = Feeds.build_feed(translated_feed)
 
-        conn
-        |> put_resp_content_type("application/xml")
-        |> text(xml_content)
+      conn
+      |> put_resp_content_type("application/xml")
+      |> text(xml_content)
+    end
+  end
 
-      {:error, reason} ->
-        Logger.error("解析失败: #{inspect(reason)}")
+  defp fetch_feed_content(url) do
+    req =
+      Req.new(max_redirects: 5)
 
-        conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{error: reason})
+    case Req.get(req, url: url) do
+      {:ok, %Req.Response{status: 200, body: body}} -> {:ok, body}
+      {:ok, reason} -> {:error, reason}
+      {:error, reason} -> {:error, reason}
     end
   end
 end

@@ -1,4 +1,4 @@
-defmodule Honyaku.External.Groq.Gemma2_2b do
+defmodule Honyaku.External.Translate.Groq.Gemma2_2b do
   require Logger
 
   @base_url "https://api.groq.com/openai/v1"
@@ -45,11 +45,11 @@ defmodule Honyaku.External.Groq.Gemma2_2b do
         {:error, :quota_exhausted}
 
       {:ok, reason} ->
-        Logger.error("Gemma 2 2B Translator API调用失败，未知错误：#{inspect(reason)}")
+        Logger.debug("Gemma 2 2B Translator API调用失败，未知错误：#{inspect(reason)}")
         {:error, :unknown_error}
 
       {:error, reason} ->
-        Logger.error("Gemma 2 2B Translator API调用失败：#{inspect(reason)}")
+        Logger.debug("Gemma 2 2B Translator API调用失败：#{inspect(reason)}")
         {:error, reason}
     end
   end

@@ -1,9 +1,9 @@
-defmodule Honyaku.TranslateJob do
-  use Oban.Worker, queue: :translate, unique: true
+defmodule Honyaku.Job.TranslateJob do
+  use Oban.Worker, queue: :translate, unique: true, max_attempts: 3
 
   require Logger
 
-  alias Honyaku.Feeds.Parser
+  # alias Honyaku.Feeds.Parser
 
   @impl Oban.Worker
   def perform(%Oban.Job{
@@ -18,24 +18,29 @@ defmodule Honyaku.TranslateJob do
           "source_lang" => source_lang
         }
       }) do
-    case Parser.translate_and_save_feed_field(
-           %{
-             id: id,
-             title: title,
-             subtitle: subtitle
-           },
-           field,
-           target_lang,
-           source_lang
-         ) do
-      {:ok, translated_text} ->
-        Logger.info("Feed 翻译成功 - #{field}: #{inspect(translated_text)}")
-        :ok
+    Logger.debug(
+      "TranslateJob.perform, title: #{title} - field: #{field} - target_lang: #{target_lang} - source_lang: #{source_lang}, id: #{id} - subtitle: #{subtitle}"
+    )
 
-      error ->
-        Logger.error("Feed 翻译失败 - #{field}: #{inspect(error)}")
-        error
-    end
+    :ok
+    # case Parser.translate_and_save_feed_field(
+    #        %{
+    #          id: id,
+    #          title: title,
+    #          subtitle: subtitle
+    #        },
+    #        field,
+    #        target_lang,
+    #        source_lang
+    #      ) do
+    #   {:ok, translated_text} ->
+    #     Logger.info("Feed 翻译成功 - #{field}: #{inspect(translated_text)}")
+    #     :ok
+
+    #   error ->
+    #     Logger.error("Feed 翻译失败 - #{field}: #{inspect(error)}")
+    #     error
+    # end
   end
 
   @impl Oban.Worker
@@ -52,28 +57,33 @@ defmodule Honyaku.TranslateJob do
           "source_lang" => source_lang
         }
       }) do
-    case Parser.translate_and_save_article_field(
-           %{
-             id: id,
-             title: title,
-             content: %{
-               "value" => content
-             },
-             summary: %{
-               "value" => summary
-             }
-           },
-           field,
-           target_lang,
-           source_lang
-         ) do
-      {:ok, translated_text} ->
-        Logger.info("Article 翻译成功 - #{field}: #{inspect(translated_text)}")
-        :ok
+    Logger.debug(
+      "TranslateJob.perform, title: #{title} - field: #{field} - target_lang: #{target_lang} - source_lang: #{source_lang}, id: #{id} - content: #{content} - summary: #{summary}"
+    )
 
-      error ->
-        Logger.error("Article 翻译失败 - #{field}: #{inspect(error)}")
-        error
-    end
+    :ok
+    # case Parser.translate_and_save_article_field(
+    #        %{
+    #          id: id,
+    #          title: title,
+    #          content: %{
+    #            "value" => content
+    #          },
+    #          summary: %{
+    #            "value" => summary
+    #          }
+    #        },
+    #        field,
+    #        target_lang,
+    #        source_lang
+    #      ) do
+    #   {:ok, translated_text} ->
+    #     Logger.info("Article 翻译成功 - #{field}: #{inspect(translated_text)}")
+    #     :ok
+
+    #   error ->
+    #     Logger.error("Article 翻译失败 - #{field}: #{inspect(error)}")
+    #     error
+    # end
   end
 end

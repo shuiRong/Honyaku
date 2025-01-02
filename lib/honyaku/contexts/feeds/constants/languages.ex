@@ -1,12 +1,14 @@
-defmodule Language do
+defmodule Honyaku.Feeds.Constants.Language do
   defstruct code: "", name: ""
 end
 
-defmodule LanguageMap do
+defmodule Honyaku.Feeds.Constants.LanguagesMap do
   @moduledoc """
   语言代码映射
   https://developers.deepl.com/docs/resources/supported-languages#target-languages
   """
+
+  alias Honyaku.Feeds.Constants.Language
 
   @languages %{
     :AR => %Language{code: "AR", name: "Arabic"},

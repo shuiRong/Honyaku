@@ -1,4 +1,4 @@
-defmodule Honyaku.Feeds.BuildFeed do
+defmodule Honyaku.Feeds.Services.BuildService do
   @moduledoc """
   构建 RSS 订阅源
   """
@@ -6,31 +6,24 @@ defmodule Honyaku.Feeds.BuildFeed do
   require Logger
   alias Honyaku.Feeds.{Feed, Article}
 
-  def build_feed(%Feed{
-        title: title,
-        subtitle: subtitle,
-        id: id,
-        url: url,
-        original_updated_at: original_updated_at,
-        articles: articles
-      }) do
+  def build_feed(%Feed{} = feed) do
     Atomex.Feed.new(
-      id,
-      original_updated_at,
-      title
+      feed.id,
+      feed.original_updated_at,
+      feed.title || "Untitled Feed"
     )
-    |> then(fn feed ->
+    |> then(fn atomex_feed ->
       # 如果 subtitle 为 nil，则不设置 subtitle
-      case subtitle do
+      case feed.subtitle do
         nil ->
-          feed
+          atomex_feed
 
         _ ->
-          feed |> Atomex.Feed.subtitle(subtitle)
+          atomex_feed |> Atomex.Feed.subtitle(feed.subtitle)
       end
     end)
-    |> Atomex.Feed.link(url)
-    |> Atomex.Feed.entries(Enum.map(articles, &get_entry(&1)))
+    |> Atomex.Feed.link(feed.url)
+    |> Atomex.Feed.entries(Enum.map(feed.articles, &get_entry(&1)))
     |> Atomex.Feed.build()
     |> Atomex.generate_document()
   end
